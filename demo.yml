@@ -12,5 +12,9 @@ scenarios:
     method: GET  # request method (GET, POST, PUT, DELETE)
     label: homepage  # sampler label
 
+reporting:
+   - module: final-stats
+     dump-xml: stat.xml
+
 
   
