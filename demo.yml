@@ -1,0 +1,13 @@
+execution:
+  concurrency: 2
+  hold-for: 2m
+  ramp-up: 1m
+  scenario: quick-test
+
+
+scenarios:
+  quick-test:
+    requests:
+    - url: http://demo.ecommerce.s3-website-us-west-1.amazonaws.com/index.html#  # url to hit
+    method: GET  # request method (GET, POST, PUT, DELETE)
+    label: homepage  # sampler label

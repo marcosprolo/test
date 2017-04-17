@@ -1,0 +1,7 @@
+#!groovy
+node {
+    stage('Run Jmeter Test') {
+    
+    sh '/usr/local/bin/bzt ./test/demo.yml -report'
+    }
+    }
