@@ -13,14 +13,12 @@ scenarios:
     label: homepage  # sampler label
 
 reporting:
-  - module: console
   - module: final-stats
     summary: true
     percentiles: true
     failed-labels: false
     test-duration: true
     dump-csv: TaurusResult/perf_result_csv.csv
-  - module: junit-xml
-    data-source: pass-fail
-    filename: TaurusResult/junit-result.xml
+    dump-xml: final-stat
+  
   
