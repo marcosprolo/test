@@ -2,6 +2,6 @@
 node {
     stage('Run Jmeter Test') {
     
-    sh '/usr/local/bin/bzt ./test/demo.yml'
+    sh '/usr/local/bin/bzt /var/lib/jenkins/workspace/S3 deploy/tests/demo.yml'
     }
     }
