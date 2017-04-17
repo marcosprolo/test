@@ -26,6 +26,4 @@ reporting:
     data-source: pass-fail
     filename: TaurusResult/junit-result.xml
   - module: blazemeter
-  report-name: Taurus_test_report
-  test: Taurus_test
-  project: Taurus_run
+ 
