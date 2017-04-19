@@ -6,7 +6,6 @@ execution:
   ramp-up: 30s
   scenario: quick-test
 
-
 scenarios:
   quick-test:
     requests:
