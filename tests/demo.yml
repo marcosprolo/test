@@ -12,12 +12,12 @@ scenarios:
     requests:
     - url: https://s3-us-west-1.amazonaws.com/demo.ecommerce-test/S3_Staggin_deploy/source/html/index.html # url
     method: GET  # request method (GET, POST, PUT, DELETE)
-    label: homepage   # sampler label
+    label: homepage   #sampler label
 
 reporting:
    - module: final-stats
      dump-xml: stat.xml
    - module: passfail
      criteria: 
-     - avg-rt of IndexPage>20ms for 5s, stop as failed
+     - avg-rt of IndexPage>2s for 5s, stop as failed
  
