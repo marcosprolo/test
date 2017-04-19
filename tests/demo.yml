@@ -16,5 +16,8 @@ scenarios:
 reporting:
    - module: final-stats
      dump-xml: stat.xml
+   - module: passfail
+     criteria: 
+     - avg-rt of IndexPage>200ms for 10s, stop as failed
    
  
