@@ -3,7 +3,7 @@ settings:
 execution:
   concurrency: 2
   hold-for: 1m
-  ramp-up: 34s
+  ramp-up: 35s
   scenario: quick-test
 
 scenarios:
