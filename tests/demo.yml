@@ -19,6 +19,6 @@ reporting:
      dump-xml: stat.xml
    - module: passfail
      criteria: 
-     - avg-rt>200ms for 12s, stop as failed
+     - avg-rt>200ms for 10s, stop as failed
    
  
