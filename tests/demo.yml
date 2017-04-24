@@ -3,7 +3,7 @@ settings:
 execution:
   concurrency: 2
   hold-for: 1m
-  ramp-up: 30s
+  ramp-up: 19s
   scenario: quick-test
 
 scenarios:
@@ -13,8 +13,12 @@ scenarios:
     method: GET  # request method (GET, POST, PUT, DELETE)
     label: homepage   #sampler  label
 
+
 reporting:
    - module: final-stats
      dump-xml: stat.xml
+   - module: passfail
+     criteria: 
+     - avg-rt>200ms for 16s, stop as failed
    
  
