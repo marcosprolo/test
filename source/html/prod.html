@@ -17,6 +17,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <!-- <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href="css/boot1.css" rel="stylesheet">
+    <script src="dist/aws-cognito-sdk.min.js"></script>
+    <script src="dist/amazon-cognito-identity.min.js"></script>
     <style type="text/css">
     	
 body{
@@ -414,16 +416,40 @@ body{
 
 
             function addToCart(idp){
-              $.ajax({
-                type:'POST',
-                url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/adtocart',
-                data: JSON.stringify({"id": guid(),"cookie": document.cookie,"prod_id": idp}),
-                contentType: "application/json",
-
-                success: function(data){
-                    alert("Product added");
+                var usern = null;
+                var poolData = {
+                    UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
+                    ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
+                };
+                var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+                var cognitoUser = userPool.getCurrentUser();
+                if(cognitoUser != null){
+                    // alert(json.stringify(userPool));
+                    var usern = cognitoUser.username;
                 }
-              });
+                if(usern != null){
+                    $.ajax({
+                        type:'POST',
+                        url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/adtocart',
+                        data: JSON.stringify({"id": guid(),"cookie": usern,"prod_id": idp}),
+                        contentType: "application/json",
+
+                        success: function(data){
+                            alert("Product added");
+                        }
+                     });
+                }else{
+                    $.ajax({
+                        type:'POST',
+                        url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/adtocart',
+                        data: JSON.stringify({"id": guid(),"cookie": document.cookie,"prod_id": idp}),
+                        contentType: "application/json",
+
+                        success: function(data){
+                            alert("Product added");
+                        }
+                  });
+                }
               return false;
             }
         </script>

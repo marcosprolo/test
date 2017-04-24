@@ -26,6 +26,8 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="dist/aws-cognito-sdk.min.js"></script>
+    <script src="dist/amazon-cognito-identity.min.js"></script>
 
 </head>
 
@@ -73,32 +75,72 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
+            var usern = null;
             var total = 0;
-             $.ajax({
-                type:'POST',
-                url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/viewcart',
-                data: JSON.stringify({"cookie": document.cookie}),
-                contentType: "application/json",
-                success: function(data){
-                    // alert(JSON.stringify(data));
-                    // var valew = JSON.parse(JSON.stringify(data));
-                    data.Items.forEach(function(articleItem){
-                        $.ajax({
-                            type:'POST',
-                            url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/view',
-                            data: JSON.stringify({"id": articleItem.prod_id}),
-                            contentType: "application/json",
-                            success: function(data){
-                                var valew2 = JSON.parse(JSON.stringify(data));
-                                $('#tbodyid').append('<tr class="success">'+'<td>'+'<img width=100 height=100 src="'+valew2.Item["img"]+'">'+'</td>' +'<td>'+ valew2.Item["title"] + '</td>' + '<td>' + valew2.Item["price"] + '</td>' + '<a href="#">'+' <td>' + 'Delete' + '</td>' + '</a>' + '</tr>');
-                                total = total + parseInt(valew2.Item["price"]);
-                                $('#total').empty();
-                                $('#total').append(total);
-                            }
-                         }); 
-                    })
-                }
-            }); 
+            var poolData = {
+                UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
+                ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
+            };
+            var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+            var cognitoUser = userPool.getCurrentUser();
+            if(cognitoUser != null){
+                // alert(json.stringify(userPool));
+                var usern = cognitoUser.username;
+            }
+            if(usern != null){
+                $.ajax({
+                    type:'POST',
+                    url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/viewcart',
+                    data: JSON.stringify({"cookie": usern}),
+                    contentType: "application/json",
+                    success: function(data){
+                        // alert(JSON.stringify(data));
+                        // var valew = JSON.parse(JSON.stringify(data));
+                        data.Items.forEach(function(articleItem){
+                            $.ajax({
+                                type:'POST',
+                                url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/view',
+                                data: JSON.stringify({"id": articleItem.prod_id}),
+                                contentType: "application/json",
+                                success: function(data){
+                                    var valew2 = JSON.parse(JSON.stringify(data));
+                                    $('#tbodyid').append('<tr class="success">'+'<td>'+'<img width=100 height=100 src="'+valew2.Item["img"]+'">'+'</td>' +'<td>'+ valew2.Item["title"] + '</td>' + '<td>' + valew2.Item["price"] + '</td>' + '<a href="#">'+' <td>' + 'Delete' + '</td>' + '</a>' + '</tr>');
+                                    total = total + parseInt(valew2.Item["price"]);
+                                    $('#total').empty();
+                                    $('#total').append(total);
+                                }
+                             }); 
+                        })
+                    }
+                }); 
+            }else{
+                $.ajax({
+                    type:'POST',
+                    url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/viewcart',
+                    data: JSON.stringify({"cookie": document.cookie}),
+                    contentType: "application/json",
+                    success: function(data){
+                        // alert(JSON.stringify(data));
+                        // var valew = JSON.parse(JSON.stringify(data));
+                        data.Items.forEach(function(articleItem){
+                            $.ajax({
+                                type:'POST',
+                                url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/view',
+                                data: JSON.stringify({"id": articleItem.prod_id}),
+                                contentType: "application/json",
+                                success: function(data){
+                                    var valew2 = JSON.parse(JSON.stringify(data));
+                                    $('#tbodyid').append('<tr class="success">'+'<td>'+'<img width=100 height=100 src="'+valew2.Item["img"]+'">'+'</td>' +'<td>'+ valew2.Item["title"] + '</td>' + '<td>' + valew2.Item["price"] + '</td>' + '<a href="#">'+' <td>' + 'Delete' + '</td>' + '</a>' + '</tr>');
+                                    total = total + parseInt(valew2.Item["price"]);
+                                    $('#total').empty();
+                                    $('#total').append(total);
+                                }
+                             }); 
+                        })
+                    }
+                }); 
+            }
+
         }); 
     </script>
 
