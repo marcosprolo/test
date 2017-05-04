@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- <link rel="icon" href="favicon.ico"> -->
+    <link rel="icon" href="favicon.ico">
     
     <title>STORE</title>
     <!-- Bootstrap core CSS -->
@@ -159,7 +159,7 @@
         right: -10%;
       }
       #contcont{
-        margin-top: 10%;
+        margin-top: 15%;
       }
       #article{
         line-height: 1.5rem;
@@ -224,6 +224,11 @@
 /*#divcarcont{
   align-self: flex-end;
 }*/
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
     </style>
     <script src="dist/aws-cognito-sdk.min.js"></script>
     <script src="dist/amazon-cognito-identity.min.js"></script>
@@ -272,7 +277,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="signInModalLabel">Sign in</h5>
+          <h5 class="modal-title" id="signInModalLabel">Sign up</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -282,15 +287,7 @@
             <div class="form-group">
               <label for="sign-username" class="form-control-label">Username:</label>
               <input type="text" class="form-control" id="sign-username">
-            </div>            
-            <div class="form-group">
-              <label for="sign-name" class="form-control-label">Nickname:</label>
-              <input type="text" class="form-control" id="sign-name">
-            </div>
-            <div class="form-group">
-              <label for="sign-name" class="form-control-label">Email:</label>
-              <input type="text" class="form-control" id="sign-email">
-            </div>             
+            </div>                     
             <div class="form-group">
               <label for="sign-password" class="form-control-label">Password:</label>
               <input type="password" class="form-control" id="sign-password">
@@ -302,7 +299,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" onClick="register()" class="btn btn-primary">Sign in</button>
+          <button type="button" onClick="register()" class="btn btn-primary">Sign up</button>
         </div>
       </div>
     </div>
@@ -323,11 +320,11 @@
           <form>
             <div class="form-group">
               <label for="log-name" class="form-control-label">Username:</label>
-              <input type="text" class="form-control" id="login-username">
+              <input type="text" class="form-control" id="loginusername">
             </div>             
             <div class="form-group">
               <label for="log-pass" class="form-control-label">Password:</label>
-              <input type="password" class="form-control" id="login-password">
+              <input type="password" class="form-control" id="loginpassword">
             </div>               
             <div class="form-group">
               <label for="log-pass" id="errorl" class="form-control-label"></label>
@@ -387,7 +384,7 @@
                         <a class="nav-link" data-toggle="modal" data-target="#videoModal" href="#">About us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="cart.html" target="_blank">Cart</a>
+                        <a class="nav-link" href="#" onClick="showcart()">Cart</a>
                     </li>                       
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="login2" data-toggle="modal" data-target="#logInModal">Log in</a>
@@ -399,7 +396,7 @@
                         <a class="nav-link" href="#" style="display:none" id="nameofuser"></a>
                     </li>                    
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="signin2" data-toggle="modal" data-target="#signInModal">Sign in</a>
+                        <a class="nav-link" href="#" id="signin2" data-toggle="modal" data-target="#signInModal">Sign up</a>
                     </li>                    
                 </ul>
             </div>
@@ -472,7 +469,7 @@
 <!-- </form> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script type="text/javascript">
-
+    var token ='';
     function guid() {
       function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -499,24 +496,6 @@
           })
         }
       });
-    });
-
-    $(document).ready(function(){
-      var poolData = {
-          UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
-          ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
-      };
-      var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-      if(userPool != null){
-          // alert(json.stringify(userPool));
-          var cognitoUser = userPool.getCurrentUser();
-          var usern = cognitoUser.username;
-          document.getElementById("signin2").text = "";
-          document.getElementById("login2").text = "";
-          document.getElementById("nameofuser").text = "Welcome " + usern;
-          document.getElementById('nameofuser').style.display = 'block';
-          document.getElementById('logout2').style.display = 'block';
-      }
     });
 
     $('#agregar').on('click', function(){
@@ -586,7 +565,11 @@
 
     function showIt(eid){
       // location.href= 'prod.html?id=' + eid;
-      window.open('prod.html?id=' + eid,'_blank');
+      window.open('prod.html?idp_=' + eid +'&tokenp_='+token,'_blank');
+    } 
+    function showcart(){
+      // location.href= 'prod.html?id=' + eid;
+      window.open('cart.html?tokenp_=' + token,'_blank');
     }     
 
     function send(){
@@ -599,16 +582,16 @@
 
     function byCat(cat){
       $.ajax({
-        type:'GET',
-        url: API_URL,
+        type:'POST',
+        url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/bycat',
+        data: JSON.stringify({"cat": cat}),
+        contentType: "application/json",
         success: function(data){
             $('#tbodyid').empty();
-          var valew = JSON.parse(JSON.stringify(data));
-          document.frm.next2.value = valew.LastEvaluatedKey["id"];
+          // var valew = JSON.parse(JSON.stringify(data));
+          // document.frm.next2.value = valew.LastEvaluatedKey["id"];
           data.Items.forEach(function(articleItem){
-            if(articleItem.cat == cat){
                 $('#tbodyid').append('<div class="col-lg-4 col-md-6 mb-4">' + '<div class="card h-100">' + '<a href="#" onClick="showIt('+ articleItem.id +')">' + '<img class="card-img-top img-fluid" src="'+articleItem.img+'" alt="">'+ '</a>' + '<div class="card-block">' + '<h4 class="card-title">' + '<a href="#" onClick="showIt('+ articleItem.id +')">' + articleItem.title + '</a>' + '</h4>' + '<h5>$' + articleItem.price + '</h5>' + '<p id="article" class="card-text">' + articleItem.desc + ' </p>' + ' </div>' + '</div>' +'</div>');
-            }
           })
         }
       });
@@ -623,166 +606,76 @@
           });
           return false;
     }(window, window.videojs));
-    </script>
 
-    <script>
     function logIn(){
-        var password = document.getElementById("login-password").value;
-        var username = document.getElementById("login-username").value;
-        var authenticationData = {
-            Username : username,
-            Password : password,
-        };
-        var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
-        var poolData = {
-            UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
-            ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
-        };
-        var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-        var userData = {
-            Username : username,
-            Pool : userPool
-        };
-        var cognitoUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
-            // document.getElementById("login-password").value = "";
-            // document.getElementById("login-username").value = "";
-            //   $('#logInModal').modal('hide');
-            // document.getElementById("signin2").text = "";
-            // document.getElementById("login2").text = "";
-            // document.getElementById("nameofuser").text = "Welcome " + username;
-            // document.getElementById('nameofuser').style.display = 'block';
-            // document.getElementById('logout2').style.display = 'block';
-        cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: function (result) {
-              // alert(userPool.toSource());
-              $('#logInModal').modal('hide');
-              document.getElementById("signin2").text = "";
-              document.getElementById("login2").text = "";
-              document.getElementById("nameofuser").text = "Welcome " + username;
-              document.getElementById('nameofuser').style.display = 'block';
-              document.getElementById('logout2').style.display = 'block';
-                console.log('access token + ' + result.getAccessToken().getJwtToken());
-                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                    IdentityPoolId : 'us-west-2_GW9FQ6y0H', // your identity pool id here
-                    Logins : {
-                        // Change the key below according to the specific region your user pool is in.
-                        'cognito-idp.<us-west-2>.amazonaws.com/<us-west-2_GW9FQ6y0H>' : result.getIdToken().getJwtToken()
-                    }
-                });
+        var pass = b64EncodeUnicode(document.getElementById("loginpassword").value);
+        var username = document.getElementById("loginusername").value;
+        if(pass == "" || username == ""){
+          alert("Please fill out Username and Password.");
+        }else{        
+          $.ajax({
+                type:'POST',
+                url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/login',
+                data: JSON.stringify({"username": username,"password": pass}),
+                contentType: "application/json",
 
-                // Instantiate aws sdk service objects now that the credentials have been updated.
-                // example: var s3 = new AWS.S3();
-            },
-            onFailure: function(err) {
-                // alert(err);
-                var text = String(err);
-                text = text.replace('UsernameExistsException: ','');
-                document.getElementById("errorl").innerHTML = text + '!';
-                return;
-            },
-
-        });
+                success: function(data){
+                  if(data.errorMessage == "Wrong password."){
+                    alert("Wrong password.");
+                  }else if(data.errorMessage == "User does not exist."){
+                    alert("User does not exist.");
+                  }else{
+                    $('#logInModal').modal('hide');
+                    document.getElementById("signin2").style.display = 'none';
+                    document.getElementById("login2").style.display = 'none';
+                    document.getElementById("nameofuser").text = "Welcome " + username;
+                    document.getElementById('nameofuser').style.display = 'block';
+                    document.getElementById('logout2').style.display = 'block';
+                    token = data;
+                  }
+                }
+          });
+        }
     }
 
     function logOut(){
-      var poolData = {
-          UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
-          ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
-      };
-      var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-      var cognitoUser = userPool.getCurrentUser();
-      cognitoUser.signOut();
-      document.getElementById("signin2").text = "Sign In";
-      document.getElementById("login2").text = "Log In";
-      document.getElementById("nameofuser").text = "";
-      document.getElementById('nameofuser').style.display = 'none';
-      document.getElementById('logout2').style.display = 'none';
+      location.reload();
     } 
 
-    // function call(){
-    //     var poolData = {
-    //         UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
-    //         ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
-    //     };
-    //     var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-    //     var cognitoUser = userPool.getCurrentUser();
-    //     var usern = cognitoUser.username;
-    //     // alert(cognitoUser.username);
-    // }
-
-
+    function b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+        }));
+    }   
 
     function register(){
-      // alert('llego');
-        var poolData = {
-            UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
-            ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
-        };
-        var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-        var nick = document.getElementById("sign-name").value;
-        var email = document.getElementById("sign-email").value;
-        var password = document.getElementById("sign-password").value;
+        var pass = b64EncodeUnicode(document.getElementById("sign-password").value);
         var username = document.getElementById("sign-username").value;
-        var attributeList = [];
+        if(pass == "" || username == ""){
+          alert("Please fill out Username and Password.");
+        }else{  
+        $.ajax({
+              type:'POST',
+              url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/signup',
+              data: JSON.stringify({"username": username,"password": pass}),
+              contentType: "application/json",
 
-        var dataEmail = {
-            Name : 'email',
-            Value : email
-        };        
-
-        var dataNickname = {
-            Name : 'nickname',
-            Value : nick
-        };
-
-        var attributeEmail = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserAttribute(dataEmail);
-        var attributeNickname = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserAttribute(dataNickname);
-
-        attributeList.push(attributeEmail);
-        attributeList.push(attributeNickname);
-
-        userPool.signUp(username, password, attributeList, null, function(err, result){
-            if (err) {
-                // alert(err);
-                var text = String(err);
-                text = text.replace('UsernameExistsException: ','');
-                document.getElementById("errors").innerHTML = text + '!';
-                return;
-            }
-            cognitoUser = result.user;
-            console.log('user name is ' + cognitoUser.getUsername());
-
-            var code = prompt("Please enter comfirmation code", "");
-            
-            if (code != null) {
-              var poolData = {
-                  UserPoolId : 'us-west-2_GW9FQ6y0H', // Your user pool id here
-                  ClientId : 'ji731td9dcmv4dopq60oin7vg' // Your client id here
-              };
-
-              var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-              var userData = {
-                  Username : username,
-                  Pool : userPool
-              };
-
-              var cognitoUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
-              cognitoUser.confirmRegistration(code, true, function(err, result) {
-                  if (err) {
-                      alert(err);
-                      return;
-                  }
-                  console.log('call result: ' + result);
-                  document.getElementById("sign-name").value = "";
-                  document.getElementById("sign-email").value = "";
-                  document.getElementById("sign-password").value = "";
-                  document.getElementById("sign-username").value = "";
+              success: function(data){
+                if(data.errorMessage == "This user already exist."){
+                  alert("This user already exist.");
+                }else{                  
                   $('#signInModal').modal('hide');
-              });
-            }
+                  document.getElementById("signin2").style.display = 'none';
+                  document.getElementById("login2").style.display = 'none';
+                  document.getElementById("nameofuser").text = "Welcome " + username;
+                  document.getElementById('nameofuser').style.display = 'block';
+                  document.getElementById('logout2').style.display = 'block';
+                  // alert('welcome');
+                }
+              }
         });
+      }
     }
-
     </script>
 
     <div id="footc">
