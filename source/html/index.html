@@ -229,9 +229,34 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
+
+.navbar-nav{
+  display: flex;
+}
+
+.navbar-toggleable-md .navbar-nav {
+  -moz-box-direction: normal;
+  -moz-box-orient: horizontal;
+  flex-direction: row;
+}
+
+.ml-auto{
+  margin-left:auto !important;
+}
+.navbar-collapse{
+  flex-basis:38% !important;
+}
+
+.navbar-toggleable-md .navbar-nav .nav-link {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.navbar-toggleable-md .navbar-collapse {
+  /*display: contents;*/
+  width: 100%;
+}
     </style>
-    <script src="dist/aws-cognito-sdk.min.js"></script>
-    <script src="dist/amazon-cognito-identity.min.js"></script>
 </head>
 
 <body>
@@ -341,11 +366,11 @@ html, body {
 <!-- end modal -->
 
 <!-- modal video -->
-    <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="logInModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal fade" id="videoModal" role="dialog">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="logInModalLabel">About us</h5>
+          <h5 class="modal-title" id="videoModalLabel">About us</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -364,7 +389,6 @@ html, body {
       </div>
     </div>
   </div>
-<!-- end modal -->
     <!-- Navigation -->
     <nav style="height:350px" class="navbar navbar-toggleable-md bg-inverse">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false" aria-label="Toggle navigation">
@@ -372,7 +396,7 @@ html, body {
         </button>
         <div class="container">
             <a class="navbar-brand" id="nava" href="index.html"><img width=50 height=50 style="margin-right:10px" src="bm.png">      PRODUCT STORE</a>
-            <div class="collapse navbar-collapse" id="navbarExample">
+            <div class="navbar-collapse" id="navbarExample">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item active">
                         <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
@@ -464,10 +488,9 @@ html, body {
     <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
     <script src="https://unpkg.com/video.js/dist/video.js"></script>
     <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-     <!-- <form name="frm" id="frm" style="float: right;" onsubmit="return false"> -->
-    <!-- <button type="button"  class="btn btn-primary" id="next2" value="">Next</button> -->
-<!-- </form> -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="vendor/tether/tether.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript">
     var token ='';
     function guid() {
@@ -676,6 +699,17 @@ html, body {
         });
       }
     }
+    $('#videoModal').on('hidden.bs.modal', function () {
+      var player = window.player = videojs('example-video');
+      document.body.style.padding = 0;
+      player.pause();
+    });
+    $('#logInModal').on('hidden.bs.modal', function (e) {
+        document.body.style.padding = 0;
+    });      
+    $('#signInModal').on('hidden.bs.modal', function (e) {
+        document.body.style.padding = 0;
+    });
     </script>
 
     <div id="footc">

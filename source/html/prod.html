@@ -14,8 +14,6 @@
     <!-- Bootstrap core CSS -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <!-- <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
-    <!-- <link href="css/boot1.css" rel="stylesheet"> -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/latofonts.css" rel="stylesheet" type="text/css">
     <link href="css/latostyle.css" rel="stylesheet" type="text/css">
@@ -452,9 +450,34 @@ html, body {
 a:focus{
   color: white;
 }
+
+.navbar-nav{
+  display: flex;
+}
+
+.navbar-toggleable-md .navbar-nav {
+  -moz-box-direction: normal;
+  -moz-box-orient: horizontal;
+  flex-direction: row;
+}
+
+.ml-auto{
+  margin-left:auto !important;
+}
+.navbar-collapse{
+  flex-basis:38% !important;
+}
+
+.navbar-toggleable-md .navbar-nav .nav-link {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.navbar-toggleable-md .navbar-collapse {
+  /*display: contents;*/
+  width: 100%;
+}
     </style>
-    <script src="dist/aws-cognito-sdk.min.js"></script>
-    <script src="dist/amazon-cognito-identity.min.js"></script>
 </head>
 
 <body>
@@ -595,7 +618,7 @@ a:focus{
         </button>
         <div class="container">
             <a class="navbar-brand" id="nava" href="index.html"><img width=50 height=50 style="margin-right:10px" src="bm.png">      PRODUCT STORE</a>
-            <div class="collapse navbar-collapse" id="navbarExample">
+            <div class="navbar-collapse" id="navbarExample">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item active">
                         <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
@@ -655,10 +678,11 @@ a:focus{
     <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
     <script src="https://unpkg.com/video.js/dist/video.js"></script>
     <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-     <!-- <form name="frm" id="frm" style="float: right;" onsubmit="return false"> -->
-    <!-- <button type="button"  class="btn btn-primary" id="next2" value="">Next</button> -->
-<!-- </form> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+      <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/tether/tether.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript">
     var token ='';
     function guid() {
@@ -852,8 +876,8 @@ a:focus{
                 success: function(data){
                     // $('#tbodyid').empty();
                     var valew = JSON.parse(JSON.stringify(data));
-                    $('#tbodyid').append('<h2 class="name">' + valew.Item["title"] + '</h2>' + '<hr>' + '<h3 class="price-container">' + valew.Item['price']+ '$' + '<small>' + ' *includes tax'+'</small>'+'</h3>'+'<hr>'+'<div class="description description-tabs">'+'<ul id="myTab" class="nav nav-pills">'+'<li class="active">'+'</li>'+'</ul>'+'<div id="myTabContent" class="tab-content">'+'<div class="tab-pane fade active in" id="more-information">'+'<br>'+'<strong>'+'Product description'+'</strong>'+'<p>' + valew.Item['desc'] + '</div>'+'</div>'+'</div>'+'<hr>'+'<div class="row">'+'<div class="col-sm-12 col-md-6 col-lg-6">'+'<a href="#" onclick="addToCart('+valew.Item['id']+')" class="btn btn-success btn-lg">'+'Add to cart'+'</a>'+'</div>'+'</div>');
-                    $('#imgp').append('<div class="item active">'+'<img width=400 height=280 src="'+valew.Item['img']+'" alt="">'+'</div>');
+                    $('#tbodyid').append('<h2 class="name">' + valew["title"] + '</h2>' + '<hr>' + '<h3 class="price-container">' + valew['price']+ '$' + '<small>' + ' *includes tax'+'</small>'+'</h3>'+'<hr>'+'<div class="description description-tabs">'+'<ul id="myTab" class="nav nav-pills">'+'<li class="active">'+'</li>'+'</ul>'+'<div id="myTabContent" class="tab-content">'+'<div class="tab-pane fade active in" id="more-information">'+'<br>'+'<strong>'+'Product description'+'</strong>'+'<p>' + valew['desc'] + '</div>'+'</div>'+'</div>'+'<hr>'+'<div class="row">'+'<div class="col-sm-12 col-md-6 col-lg-6">'+'<a href="#" onclick="addToCart('+valew['id']+')" class="btn btn-success btn-lg">'+'Add to cart'+'</a>'+'</div>'+'</div>');
+                    $('#imgp').append('<div class="item active">'+'<img width=400 height=280 src="'+valew['img']+'" alt="">'+'</div>');
                 }
               });
             });  
@@ -915,6 +939,17 @@ a:focus{
                 }
               return false;
             }
+      $('#videoModal').on('hidden.bs.modal', function (e) {
+          var player = window.player = videojs('example-video');
+          document.body.style.padding = 0;
+          player.pause();
+      });      
+      $('#logInModal').on('hidden.bs.modal', function (e) {
+          document.body.style.padding = 0;
+      });      
+      $('#signInModal').on('hidden.bs.modal', function (e) {
+          document.body.style.padding = 0;
+      });
     </script>
 
     <div id="footc">
@@ -952,10 +987,7 @@ a:focus{
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/tether/tether.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.js"></script>
+
 
 </body>
 
