@@ -114,6 +114,7 @@
 
 html, body {
     max-width: 100%;
+    padding: 0px !important;
     overflow-x: hidden;
 }
 
@@ -465,7 +466,7 @@ a:focus{
   margin-left:auto !important;
 }
 .navbar-collapse{
-  flex-basis:38% !important;
+  flex-basis:44% !important;
 }
 
 .navbar-toggleable-md .navbar-nav .nav-link {
@@ -566,11 +567,11 @@ a:focus{
           <form>
             <div class="form-group">
               <label for="log-name" class="form-control-label">Username:</label>
-              <input type="text" class="form-control" id="login-username">
+              <input type="text" class="form-control" id="loginusername">
             </div>             
             <div class="form-group">
               <label for="log-pass" class="form-control-label">Password:</label>
-              <input type="password" class="form-control" id="login-password">
+              <input type="password" class="form-control" id="loginpassword">
             </div>               
             <div class="form-group">
               <label for="log-pass" id="errorl" class="form-control-label"></label>
@@ -630,7 +631,7 @@ a:focus{
                         <a class="nav-link" data-toggle="modal" data-target="#videoModal" href="#">About us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onClick="showcart()">Cart</a>
+                        <a class="nav-link" href="cart.html" id="cartur">Cart</a>
                     </li>                       
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="login2" data-toggle="modal" data-target="#logInModal">Log in</a>
@@ -695,6 +696,48 @@ a:focus{
         s4() + '-' + s4() + s4() + s4();
     }
 
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+
+     $(document).ready(function(){
+      var token = getCookie("tokenp_");
+      if(token.length > 0){
+        $.ajax({
+            type:'POST',
+            url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/check',
+            data: JSON.stringify({"token": token}),
+            contentType: "application/json",
+            success: function(data){
+                    if(data.errorMessage == "Token has expired"){
+                        alert("Your token has expired, please login again.");
+                    }else if(data.errorMessage == "Bad parameter, token malformed."){
+                        alert("Bad parameter, token malformed.");
+                    }else if(data.errorMessage == "Bad parameter, flag is incorrect."){
+                        alert("Bad parameter, flag is incorrect.");
+                    }else{
+                    document.getElementById("signin2").style.display = 'none';
+                    document.getElementById("login2").style.display = 'none';
+                    document.getElementById("nameofuser").text = "Welcome " + data.Item.username;
+                    document.getElementById('nameofuser').style.display = 'block';
+                    document.getElementById('logout2').style.display = 'block';
+                }
+            }
+        }); 
+    }else{
+      document.getElementById("signin2").style.display = 'block';
+      document.getElementById("login2").style.display = 'block';
+    }
+  });
+
     var API_URL = 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/entries';
 
     $('#agregar').on('click', function(){
@@ -712,59 +755,9 @@ a:focus{
     });
 
 
-
-    $('#next2').on('click', function(){
-      $.ajax({
-        type:'POST',
-        url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/pagination',
-        data: JSON.stringify({"id": $('#next2').val()}),
-        contentType: "application/json",
-
-        success: function(data){
-          var valew = JSON.parse(JSON.stringify(data));
-          if (valew.ScannedCount == 9){
-            document.frm.next2.value = valew.LastEvaluatedKey["id"];
-          }else{
-            div = document.getElementById('next2');
-            div.style.display = 'none';
-          }
-            $('#tbodyid').empty();
-          data.Items.forEach(function(articleItem){
-            $('#tbodyid').append('<div class="col-lg-4 col-md-6 mb-4">' + '<div class="card h-100">' + '<a href="#">' + '<img class="card-img-top img-fluid" src="'+articleItem.img+'" alt="">'+ '</a>' + '<div class="card-block">' + '<h4 class="card-title">' + '<a href="#" onClick="showIt('+ articleItem.id +')">' + articleItem.title + '</a>' + '</h4>' + '<h5>$' + articleItem.price + '</h5>' + '<p id="article" class="card-text">' + articleItem.desc + ' </p>' + ' </div>' + '</div>' +'</div>');
-          })
-        }
-      });
-      return false;
-    });    
-
-  $('#prev2').on('click', function(){
-      $.ajax({
-        type:'POST',
-        url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/pagination',
-        data: JSON.stringify({"id": $('#prev2').val()}),
-        contentType: "application/json",
-
-        success: function(data){
-          var valew = JSON.parse(JSON.stringify(data));
-          if (valew.ScannedCount == 9){
-            document.frm.next2.value = valew.LastEvaluatedKey["id"];
-            document.getElementById('next2').style.display = 'block';
-          }else{
-            div = document.getElementById('next2');
-            div.style.display = 'none';
-          }
-            $('#tbodyid').empty();
-          data.Items.forEach(function(articleItem){
-            $('#tbodyid').append('<div class="col-lg-4 col-md-6 mb-4">' + '<div class="card h-100">' + '<a href="#">' + '<img class="card-img-top img-fluid" src="'+articleItem.img+'" alt="">'+ '</a>' + '<div class="card-block">' + '<h4 class="card-title">' + '<a href="#" onClick="showIt('+ articleItem.id +')">' + articleItem.title + '</a>' + '</h4>' + '<h5>$' + articleItem.price + '</h5>' + '<p id="article" class="card-text">' + articleItem.desc + ' </p>' + ' </div>' + '</div>' +'</div>');
-          })
-        }
-      });
-      return false;
-    }); 
-
     function showcart(){
       // location.href= 'prod.html?id=' + eid;
-      window.open('cart.html?tokenp_=' + token,'_blank');
+      // window.open('cart.html?tokenp_=' + token,'_blank');
     }     
 
     function send(){
@@ -803,13 +796,11 @@ a:focus{
                   }else if(data.errorMessage == "User does not exist."){
                     alert("User does not exist.");
                   }else{
-                    $('#logInModal').modal('hide');
-                    document.getElementById("signin2").style.display = 'none';
-                    document.getElementById("login2").style.display = 'none';
-                    document.getElementById("nameofuser").text = "Welcome " + username;
-                    document.getElementById('nameofuser').style.display = 'block';
-                    document.getElementById('logout2').style.display = 'block';
+                  $('#logInModal').modal('hide');
+                  $('.modal-backdrop').hide();
                     token = data;
+                    document.cookie = "tokenp_=" + token;
+                    location.reload();
                   }
                 }
           });
@@ -817,8 +808,9 @@ a:focus{
     }
 
     function logOut(){
-      location.reload();
-    } 
+      document.cookie = 'tokenp_' + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      location.href= 'index.html';
+    }  
 
     function b64EncodeUnicode(str) {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
@@ -843,12 +835,8 @@ a:focus{
                   alert("This user already exist.");
                 }else{                  
                   $('#signInModal').modal('hide');
-                  document.getElementById("signin2").style.display = 'none';
-                  document.getElementById("login2").style.display = 'none';
-                  document.getElementById("nameofuser").text = "Welcome " + username;
-                  document.getElementById('nameofuser').style.display = 'block';
-                  document.getElementById('logout2').style.display = 'block';
-                  // alert('welcome');
+                  $('.modal-backdrop').hide();
+                  alert("Sign up successfully.");
                 }
               }
         });
@@ -856,31 +844,32 @@ a:focus{
     }
 
 
-
      $(document).ready(function(){
-               var loc = document.location.href;
-               var getString = loc.split('?')[1];
-               var GET = getString.split('&');
-               var get = {};
+           var loc = document.location.href;
+           var getString = loc.split('?')[1];
+           var GET = getString.split('&');
+           var get = {};
 
-               for(var i = 0, l = GET.length; i < l; i++){
-                  var tmp = GET[i].split('p_=');
-                  get[tmp[0]] = unescape(decodeURI(tmp[1]));
-               }
-              $.ajax({
-                type:'POST',
-                url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/view',
-                data: JSON.stringify({"id": get['id']}),
-                contentType: "application/json",
+           for(var i = 0, l = GET.length; i < l; i++){
+              var tmp = GET[i].split('p_=');
+              get[tmp[0]] = unescape(decodeURI(tmp[1]));
+           }
+           var idp = get['id'];
+           idp = idp.replace(/#/g, '');
+          $.ajax({
+            type:'POST',
+            url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/view',
+            data: JSON.stringify({"id": idp}),
+            contentType: "application/json",
 
-                success: function(data){
-                    // $('#tbodyid').empty();
-                    var valew = JSON.parse(JSON.stringify(data));
-                    $('#tbodyid').append('<h2 class="name">' + valew["title"] + '</h2>' + '<hr>' + '<h3 class="price-container">' + valew['price']+ '$' + '<small>' + ' *includes tax'+'</small>'+'</h3>'+'<hr>'+'<div class="description description-tabs">'+'<ul id="myTab" class="nav nav-pills">'+'<li class="active">'+'</li>'+'</ul>'+'<div id="myTabContent" class="tab-content">'+'<div class="tab-pane fade active in" id="more-information">'+'<br>'+'<strong>'+'Product description'+'</strong>'+'<p>' + valew['desc'] + '</div>'+'</div>'+'</div>'+'<hr>'+'<div class="row">'+'<div class="col-sm-12 col-md-6 col-lg-6">'+'<a href="#" onclick="addToCart('+valew['id']+')" class="btn btn-success btn-lg">'+'Add to cart'+'</a>'+'</div>'+'</div>');
-                    $('#imgp').append('<div class="item active">'+'<img width=400 height=280 src="'+valew['img']+'" alt="">'+'</div>');
-                }
-              });
-            });  
+            success: function(data){
+                // $('#tbodyid').empty();
+                var valew = JSON.parse(JSON.stringify(data));
+                $('#tbodyid').append('<h2 class="name">' + valew["title"] + '</h2>' + '<hr>' + '<h3 class="price-container">' + valew['price']+ '$' + '<small>' + ' *includes tax'+'</small>'+'</h3>'+'<hr>'+'<div class="description description-tabs">'+'<ul id="myTab" class="nav nav-pills">'+'<li class="active">'+'</li>'+'</ul>'+'<div id="myTabContent" class="tab-content">'+'<div class="tab-pane fade active in" id="more-information">'+'<br>'+'<strong>'+'Product description'+'</strong>'+'<p>' + valew['desc'] + '</div>'+'</div>'+'</div>'+'<hr>'+'<div class="row">'+'<div class="col-sm-12 col-md-6 col-lg-6">'+'<a href="#" onclick="addToCart('+valew['id']+')" class="btn btn-success btn-lg">'+'Add to cart'+'</a>'+'</div>'+'</div>');
+                $('#imgp').append('<div class="item active">'+'<img width=400 height=280 src="'+valew['img']+'" alt="">'+'</div>');
+            }
+          });
+        });  
 
 
             function guid() {
@@ -894,19 +883,8 @@ a:focus{
 
 
             function addToCart(idp){
-                var token = null;
-               var loc = document.location.href;
-               var getString = loc.split('?')[1];
-               var GET = getString.split('&');
-               var get = {};
-
-               for(var i = 0, l = GET.length; i < l; i++){
-                  var tmp = GET[i].split('p_=');
-                  get[tmp[0]] = unescape(decodeURI(tmp[1]));
-               }
-               token = get['token'];
-               token = token.replace(/#/g, '');
-                if(token.length > 0){
+               var token = getCookie("tokenp_");
+              if(token.length > 0){
                     $.ajax({
                         type:'POST',
                         url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/addtocart',
@@ -931,7 +909,6 @@ a:focus{
                         url: 'https://eytd7kn5ik.execute-api.us-west-2.amazonaws.com/prod/addtocart',
                         data: JSON.stringify({"id": guid(),"cookie": document.cookie,"prod_id": idp, "flag" : false}),
                         contentType: "application/json",
-
                         success: function(data){
                             alert("Product added");
                         }
@@ -941,15 +918,8 @@ a:focus{
             }
       $('#videoModal').on('hidden.bs.modal', function (e) {
           var player = window.player = videojs('example-video');
-          document.body.style.padding = 0;
           player.pause();
       });      
-      $('#logInModal').on('hidden.bs.modal', function (e) {
-          document.body.style.padding = 0;
-      });      
-      $('#signInModal').on('hidden.bs.modal', function (e) {
-          document.body.style.padding = 0;
-      });
     </script>
 
     <div id="footc">
